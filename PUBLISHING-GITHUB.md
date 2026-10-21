@@ -1,95 +1,93 @@
-# Publish EngiQuest with GitHub and Vercel
+# Publish EngiQuest with GitHub Pages
 
-Research and local inspection: **18 October 2026**. Source repository: **private [engiquest/engiquest](https://github.com/engiquest/engiquest)**, created and privacy verified in GitHub. Intended website: **`engiquest.org`**, registered through **Domain.com**. A source upload is separate from a successful deployment or domain connection; use the project's deployment status to verify hosting.
+Updated **21 October 2026**. Source: private [engiquest/engiquest](https://github.com/engiquest/engiquest), branch **main**. Intended address: **engiquest.org**, registered through **Domain.com**. GitHub Pages is the chosen website host.
 
-For the already-created repository, skip the repository-creation section below. In Vercel, import `engiquest/engiquest`, use branch `main`, framework **Next.js**, project root `./`, and Node.js **24.x**. Keep the default build/output settings. EngiBot works in written-guide mode without environment variables. Add AI credentials only through the hosting dashboard if you choose to enable it later.
+**Current verified blocker:** the repository's **Settings → Pages** screen says: **“Upgrade or make this repository public to enable Pages.”** The repository remains private. To keep it private, the account owner must select an eligible paid GitHub plan. Making the source public is an alternative only if the user explicitly changes that preference; nothing here changes visibility. GitHub documents private-repository Pages support on Pro, Team and Enterprise plans. [Pages plan eligibility](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
 
-The connected GitHub app can transfer source, but its login is not a Git password for PowerShell. Command-line Git authentication on this computer was checked and is unavailable. For future local Git sync, install/sign into GitHub Desktop and clone the repository into a **new empty folder** (for example `C:\Users\anita\Developer\engiquest-github`). Do not clone over the existing working project or force-push its older standalone history. The existing folder remains runnable with the launcher.
+**No live Pages deployment, domain routing or HTTPS has been verified.** A source upload and a successful local build are separate from a working public website. Resolve the plan blocker before changing website DNS.
 
-Use **GitHub to store the editable source**, **Vercel to run the Next.js website**, and your domain provider to point your chosen address to Vercel. Keeping the source repository private does not make the deployed website private; check the website's access settings separately.
+## What the Pages edition includes
 
-## What was checked
+The Pages build exports browser-based labs, projects, quiz, Journey and CAD as static HTML, CSS and JavaScript. EngiBot is explicitly **written-guide-only** on this edition. GitHub Pages cannot run the `/api/engibot` Node route or keep an API key on a server. [GitHub Pages hosting](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) and [Next.js static-export limits](https://nextjs.org/docs/app/guides/static-exports).
 
-- `C:\Users\anita\Developer\engiquest` is already a Git repository. At inspection it had a clean working tree, branch `master`, and no configured remote.
-- Git `2.53.0.windows.3` works in the Codex environment. It comes from a bundled runtime; availability in an ordinary PowerShell window has not been verified.
-- GitHub CLI (`gh`) was not available on PATH, so command-line GitHub authentication was not verified. The connected GitHub app has separately authenticated the **`engiquest`** account; the user has also reported browser sign-in. These are separate from Git credentials in PowerShell.
-- The app has a Node.js `/api/engibot` route with dynamic `GET` and `POST` handlers. Its settings are not configured for a static export.
+`npm run build:pages` prepares a separate staging export without the API route. The normal local application still supports optional server-side AI when configured. Never put API keys in the static export, browser code or GitHub Pages configuration; adding an Actions secret does not turn Pages into an API server.
 
-## Why GitHub Pages does not run this complete app
+## 1. Check the Pages build on Windows
 
-GitHub Pages serves static HTML, CSS and JavaScript. It does not run EngiQuest's Node server. [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
-
-Next.js static exports support build-time `GET` output, but not a request-dependent `POST` API. Publishing the current project to Pages would therefore not provide the complete EngiBot integration. A separate static edition would need deliberate code changes and either written-guide-only mode or an externally hosted API. Merely switching on Pages or setting `output: 'export'` is insufficient. [Next.js static-export limits](https://nextjs.org/docs/app/guides/static-exports).
-
-Vercel supports a full Next.js deployment, including the server route, so it fits the current application. [Next.js on Vercel](https://vercel.com/docs/frameworks/full-stack/nextjs).
-
-## 1. Check the local project
-
-Open Windows PowerShell. Run these commands one at a time, stopping if one reports an error:
+Use the Node 24 LTS setup in [README.md](README.md). Open PowerShell and run these commands separately, stopping on any error:
 
 ```powershell
 Set-Location 'C:\Users\anita\Developer\engiquest'
-git --version
-node --version
-npm.cmd --version
+npm.cmd ci
 npm.cmd test
 npm.cmd run typecheck
-npm.cmd run build
-git status --short
+npm.cmd run build:pages
+npm.cmd run preview:pages
 ```
 
-If Git is unavailable in this window, use the GitHub Desktop route below, or install Git for Windows before using command-line Git. Do not replace the project folder. Resolve actual test/build errors from their output before publishing.
+Use the browser address printed by the preview command. Keep the PowerShell window open while previewing; Ctrl+C stops it. If a port is unavailable, read the preview's error/address rather than stopping an unknown program. Open the site through this local web server, not by double-clicking an exported HTML file.
 
-Review the files being committed. Keep `package-lock.json`, the source, logo, launcher and blank `.env.example`. Exclude `.env.local`, other credentials, `node_modules`, `.next`, logs and `.vercel`. The current `.gitignore` already covers these paths; ignore rules do not remove a secret that was committed earlier.
+Check desktop and mobile layouts, field filtering, quiz results, a lab's scoring, project checklists, CAD modeling/JSON export, refresh persistence, and EngiBot's written guidance. These commands prepare and preview files locally; they do not publish. `npm run build` and `npm run start` remain the separate local Next.js server commands.
 
-## 2. Put the source on GitHub
+## 2. Keep source and credentials separate
 
-The chosen GitHub owner is **`engiquest`**, repository name **`engiquest`**, visibility **Private**. If it has already been created or pushed for you, open [the intended repository](https://github.com/engiquest/engiquest) while signed in and skip duplicate creation.
+The private repository already exists. Do not create a second repository or change its visibility. Source updates must reach **main**, including `.github/workflows/deploy-pages.yml`, `package-lock.json` and the Pages build scripts. Check the latest commit on GitHub before publishing.
 
-The simplest manual route is [GitHub Desktop](https://desktop.github.com/):
+The connected GitHub app's authentication is separate from PowerShell Git credentials. If you use GitHub Desktop, sign in and clone the existing repository into a **new empty folder**, such as `C:\Users\anita\Developer\engiquest-github`. Do not clone over the current project or force-push its older standalone history. Review intended changes before committing and pushing them.
 
-1. Install it if needed and sign in to your intended GitHub account.
-2. Choose **File → Add local repository** and select `C:\Users\anita\Developer\engiquest`.
-3. Review and commit any intended pending source changes in the Changes view.
-4. Click **Publish repository**. Use name **engiquest**, owner **engiquest**, and leave **Keep this code private** checked.
-5. Publish, then open the repository on GitHub and verify that the source and lockfile appear.
+Do not upload `.env.local`, other secrets, dependencies, build caches or logs. Keep `.env.example` blank. Pages needs no OpenAI credentials. The publishing workflow uses GitHub's scoped workflow permissions; do not paste a personal token into its YAML.
 
-No remote existed at inspection. If a remote now exists, use the existing repository instead of removing or replacing it. [GitHub's Desktop publishing steps](https://docs.github.com/en/desktop/adding-and-cloning-repositories/adding-an-existing-project-to-github-using-github-desktop?platform=windows).
+## 3. Enable Pages after the plan blocker is resolved
 
-**PowerShell alternative**, if Git authentication is already configured: create the empty private repository `engiquest/engiquest` on GitHub, unless it already exists. Do not add a README, license or `.gitignore` during creation because the local project already contains files. After the repository exists:
+1. Sign into GitHub as **engiquest** and open [the repository's Pages settings](https://github.com/engiquest/engiquest/settings/pages).
+2. Under **Build and deployment → Source**, choose **GitHub Actions**. Use the supplied workflow; do not add a competing Jekyll workflow or select a source branch for raw Next.js files.
+3. Confirm `.github/workflows/deploy-pages.yml` exists on the repository's default branch **main**. It is intentionally triggered by **workflow_dispatch**. Pushing source alone does not publish this workflow.
+
+The workflow builds static files, uploads the Pages artifact and deploys it using GitHub's Pages actions. [GitHub's custom-workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+
+When ready to publish, open **Actions**, select the workflow associated with **deploy-pages.yml**, choose **Run workflow**, select **main**, and run it. Opening the run shows its logs. Both build and deployment must succeed; then open the deployment URL shown by GitHub. Clicking **Run workflow** publishes or updates the site. [Manual workflow instructions](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).
+
+Without a custom domain, this project site's normal address is `https://engiquest.github.io/engiquest/`. The workflow reads `actions/configure-pages` output `base_path` so asset URLs match the active Pages address. **After adding, changing or removing a custom domain, run the workflow again** to rebuild paths for that address. This includes switching from `/engiquest/` to the root of `engiquest.org`.
+
+## 4. Connect engiquest.org
+
+Do this only once Pages is enabled and you are ready to publish. Start with GitHub's account-level **Settings → Pages → Add a domain** to verify **engiquest.org**. Copy the unique TXT record GitHub supplies into your DNS provider, return to GitHub and verify it; keep that TXT record afterward. [GitHub domain verification](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages).
+
+Then, in the **repository's Settings → Pages → Custom domain**, save **engiquest.org** before changing its website DNS. GitHub Actions publishing uses that setting; a `CNAME` file is not required. Point `www` to `engiquest.github.io` with no repository path. Configure the following records at the authoritative DNS provider:
+
+| Type | Name | Value |
+| --- | --- | --- |
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
+| CNAME | www | engiquest.github.io |
+
+Optional IPv6 support uses four `AAAA` records at `@`: `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, and `2606:50c0:8003::153`. Keep the A records too. Use the registrar's root-host equivalent if it does not label it `@`. With both hostnames configured, GitHub redirects `www.engiquest.org` to the saved apex domain. [Official GitHub DNS values and custom-domain settings](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
+
+In Domain.com's account, select **engiquest.org** and its DNS management page. Some accounts have moved to Network Solutions: its DNS interface has **Advanced DNS Records**, with **Advanced Tools → Manage** in the classic view. If the domain uses another provider's nameservers, make the records there instead. Keep unrelated email/MX, SPF/DKIM and verification records. Update conflicting website A/AAAA/CNAME entries for these hostnames only. [Domain.com transition information](https://www.networksolutions.com/help/article/faqs-domaindotcom-becoming-network-solutions) and [registrar DNS instructions](https://www.networksolutions.com/help/article/manage-dns-adns-records).
+
+Run the publishing workflow again after saving the domain. When GitHub's DNS check passes and its certificate is ready, enable **Enforce HTTPS** in repository **Settings → Pages**. Test `https://engiquest.org` and `https://www.engiquest.org` in a browser. DNS/certificate changes can take time; use the displayed checks and actual records to diagnose problems. [GitHub HTTPS instructions](https://docs.github.com/en/pages/getting-started-with-github-pages/securing-your-github-pages-site-with-https).
+
+## 5. Diagnose publishing problems
+
+| Symptom | Concrete next step |
+| --- | --- |
+| Pages still says to upgrade or make the repository public | Have the account owner activate an eligible plan for private-repository Pages. Keep the repository private unless the user explicitly decides otherwise. |
+| No Run workflow button | Check that `deploy-pages.yml` with `workflow_dispatch` is on default branch main and that your account has write access. |
+| Build/deploy fails | Open that Actions run and read the first failing step. Check Pages source is GitHub Actions and any displayed environment/permission restriction. |
+| Page loads without styling, logo or images | Compare the published address with the configured custom domain, then rerun the workflow so `base_path` is rebuilt. |
+| DNS check or HTTPS fails | Compare the authoritative A, optional AAAA, and www CNAME records with the table; inspect conflicting website records and GitHub's certificate message. |
+| EngiBot offers written guides | This is the intended static-site behavior. API credentials cannot enable AI on Pages. |
+| Progress is empty at the new address | Return to the original browser and address. Local, github.io and custom-domain storage are separate. |
+
+Windows PowerShell can inspect DNS without Unix tools:
 
 ```powershell
-git remote add origin 'https://github.com/engiquest/engiquest.git'
-git push -u origin HEAD
+Resolve-DnsName engiquest.org -Type NS
+Resolve-DnsName engiquest.org -Type A
+Resolve-DnsName engiquest.org -Type AAAA
+Resolve-DnsName www.engiquest.org -Type CNAME
 ```
 
-These commands publish existing commits on your current branch. Commit intended changes first; if `origin` already exists, inspect it instead of running `remote add`. An authentication error means the push did not complete: sign in through the supported Git credential flow or use GitHub Desktop. Do not paste tokens into chat or source files. [GitHub's local-repository instructions](https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github).
-
-## 3. Run the website on Vercel
-
-1. Sign in to Vercel. Select the correct account/team and choose **Add New → Project**.
-2. Connect the **engiquest** GitHub account, grant Vercel access to the private **engiquest/engiquest** repository, and import it. If it is missing, check the GitHub integration's repository permissions. [Vercel GitHub integration](https://vercel.com/docs/git/vercel-for-github).
-3. Use the **Next.js** framework preset and the directory containing `package.json` as the project root. Keep the framework's default output directory. Use `npm ci` to install and `npm run build` to build.
-4. Set Node.js to **24.x** in project **Settings → Build and Deployment**. This major is currently supported. [Vercel Node.js versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
-5. Leave AI environment variables unset initially; EngiBot will offer written guidance. Later AI setup requires server-side `OPENAI_API_KEY`, an explicit `OPENAI_MODEL`, and a 16–128 character `ENGIBOT_ACCESS_CODE` in Vercel's environment settings. Never put their real values in the repository. The project README describes the remaining AI/privacy limitations.
-6. Click **Deploy**, which publishes a website. Open the resulting address and test it on desktop and mobile before sharing it.
-
-Confirm the production branch under **Settings → Environments → Production → Branch Tracking**. The local branch was `master`; use the branch actually pushed. Pushes to that branch update the public deployment, while other branches normally produce previews. [Vercel Git deployment and branch settings](https://vercel.com/docs/git).
-
-Check navigation, field filtering, quiz completion, lab feedback, refresh persistence, CAD rendering/JSON export, a project checklist, and written-guide mode. A green build does not prove these browser checks passed. Inspect Vercel build/runtime logs if something fails. No live AI request or hosted browser verification was performed as part of this research.
-
-## 4. Link your own domain
-
-The domain is **engiquest.org**, registered through **Domain.com**. Domain.com is transitioning accounts to Network Solutions, and its help site now redirects there. If your account has moved, use the Network Solutions account manager linked by the registrar; the transition itself does not require changing DNS. [Official Domain.com transition FAQ](https://www.networksolutions.com/help/article/faqs-domaindotcom-becoming-network-solutions).
-
-1. In the deployed Vercel project, open **Settings → Domains → Add Domain** and enter **engiquest.org**. Add **www.engiquest.org** too and set it to redirect to **engiquest.org**.
-2. Copy the exact record type, name and value Vercel displays. Do not copy another site's IP address or an old tutorial's DNS values.
-3. In your registrar account, select **Domains → engiquest.org** and open its DNS-record management page. The Network Solutions interface offers **Advanced DNS Records**; its classic view places that under **Advanced Tools → Manage**. If the account says DNS is hosted elsewhere, edit records at that named provider instead. [Official DNS-management instructions](https://www.networksolutions.com/help/article/manage-dns-adns-records).
-4. Add or update only the website records requested by Vercel: usually an A record for the root (`@`) and CNAME for `www`, using the displayed values. Keep unrelated email/MX and verification records. There is normally no need to transfer the domain or replace all its nameservers.
-5. Add a verification TXT record if Vercel requests one. Recheck its domain status, then test **https://engiquest.org** and the **www** redirect. Live deployment, DNS routing and HTTPS are still unverified until those checks succeed.
-
-[Vercel domain dashboard instructions](https://vercel.com/docs/domains/working-with-domains/add-a-domain) and [DNS setup guidance](https://vercel.com/docs/domains/set-up-custom-domain).
-
-If verification fails, compare the displayed required records with the authoritative provider's records, including conflicting A/AAAA/CNAME entries. Do not repeatedly restart the app: DNS is separate from the local server.
-
-Learning progress stays in each browser and website origin. The custom domain, Vercel address and local address each have separate saved progress. Export progress and CAD files before switching addresses; the progress export is an archive, and the app currently has no progress-import feature.
+No AAAA answer is expected if you chose not to configure IPv6. Export progress and CAD files before switching addresses. Progress export is a readable archive; this version has no progress-import feature. Keep the local launcher workflow for offline/local development, and rerun the manual publishing workflow when a tested update is ready for the public site.

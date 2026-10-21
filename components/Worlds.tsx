@@ -1,6 +1,6 @@
 'use client';
 import {useMemo,useState,type CSSProperties} from 'react';
-import {ArrowRight,ArrowUpRight,Box,Compass,Orbit,FlaskConical,Hammer,Search,CheckCircle2,Layers3} from 'lucide-react';
+import {ArrowRight,ArrowUpRight,Box,Compass,Orbit,FlaskConical,Hammer,Search,CheckCircle2,Layers3,UsersRound} from 'lucide-react';
 import {motion} from 'framer-motion';
 import {FIELDS,type FieldFilter} from '@/lib/fields';
 import {getDisciplineTheme} from '@/lib/discipline-themes';
@@ -9,9 +9,10 @@ import {projects} from '@/lib/projects';
 import {useProgress} from '@/lib/state';
 import DisciplineArt from './DisciplineArt';
 import LabVisualization from './LabVisualization';
+import {COMMUNITY_MESSAGE} from '@/lib/site-copy';
 
 export function Welcome({onQuiz,onTracks,onCad,quizCount}:{onQuiz:()=>void;onTracks:()=>void;onCad:()=>void;quizCount:number}){
- return <section className="welcome-page"><div className="welcome-hero"><div className="welcome-copy"><span className="eyebrow"><span className="status-light"/>THE FUTURE NEEDS YOUR IDEAS</span><h1>What will<br/>you <em>engineer?</em></h1><p>Big questions. Bold experiments. Things you never thought you could build. Your engineering adventure starts with a choice.</p><div className="welcome-facts"><span><b>06</b> engineering worlds</span><span><b>30</b> interactive labs</span><span><b>∞</b> possibilities</span></div></div><div className="welcome-orbit"><DisciplineArt field="all" variant="hero"/><span className="diagram-label">THE ONLY REQUIREMENT IS CURIOSITY.</span></div></div>
+ return <section className="welcome-page"><div className="welcome-hero"><div className="welcome-copy"><span className="eyebrow"><span className="status-light"/>THE FUTURE NEEDS YOUR IDEAS</span><h1>What will<br/>you <em>engineer?</em></h1><p>Big questions. Bold experiments. Things you never thought you could build. Your engineering adventure starts with a choice.</p><div className="community-proof"><span className="community-icon"><UsersRound size={19} aria-hidden="true"/></span><span>{COMMUNITY_MESSAGE}</span></div><div className="welcome-facts"><span><b>06</b> engineering worlds</span><span><b>30</b> interactive labs</span><span><b>∞</b> possibilities</span></div></div><div className="welcome-orbit"><DisciplineArt field="all" variant="hero"/><span className="diagram-label">THE ONLY REQUIREMENT IS CURIOSITY.</span></div></div>
  <div className="start-heading"><span className="eyebrow">YOUR ADVENTURE, YOUR WAY</span><p>Choose where you begin.</p></div><section className="entry-grid" aria-label="Start exploring">
  <button className="entry-card entry-quiz" onClick={onQuiz}><div className="entry-top"><Compass/><span>01 / DISCOVER</span><ArrowUpRight/></div><h2>Find your spark.</h2><span className="entry-name">Discover Your Path</span><p>Not sure where to start? Answer 20 questions and explore your matches across all six fields.</p><span className="entry-link">{quizCount===20?'View my interest matches':quizCount?'Continue my quiz':'Take the interest quiz'}<ArrowRight size={19}/></span><small>Interest matches. No right or wrong answers.</small></button>
  <button className="entry-card entry-track" onClick={onTracks}><div className="entry-top"><Orbit/><span>02 / EXPLORE</span><ArrowUpRight/></div><h2>Follow your curiosity.</h2><span className="entry-name">Choose Your Track</span><p>Already have a field in mind? Step into its world of experiments, builds, and future possibilities.</p><span className="entry-link">Choose my engineering field<ArrowRight size={19}/></span><small>Six disciplines. Switch any time.</small></button>

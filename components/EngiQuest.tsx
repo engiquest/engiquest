@@ -1,7 +1,8 @@
 'use client';
+import {assetPath} from '@/lib/site-config';
 import {useState} from 'react';
 import dynamic from 'next/dynamic';
-import {Compass,FlaskConical,Box,Orbit,ChartNoAxesCombined,Sun,Moon,UserRound,ArrowUpRight,type LucideIcon} from 'lucide-react';
+import {Compass,FlaskConical,Box,Orbit,ChartNoAxesCombined,Sun,Moon,UserRound,ArrowUpRight,Wrench,type LucideIcon} from 'lucide-react';
 import {MotionConfig} from 'framer-motion';
 import {FIELDS,fieldName,type FieldFilter,type Field} from '@/lib/fields';
 import {LABS} from '@/lib/labs';
@@ -40,9 +41,9 @@ function App(){
  const lab=catalog==='labs'?LABS.find(l=>l.id===active):undefined;
  const project=catalog==='projects'?projects.find(p=>p.id===active):undefined;
  const cadQuest=CAD_QUESTS.find(q=>q.id===cadQuestId&&(data.field==='all'||q.field===data.field))??CAD_QUESTS.find(q=>data.field==='all'||q.field===data.field);
- const brand=<button className="brand" onClick={()=>navigate('Welcome')} aria-label="EngiQuest home"><img src="/engiquest-logo.png" alt=""/><span>Engi<span className="orange">Quest</span><small>IDEAS START HERE</small></span></button>;
+ const brand=<button className="brand" onClick={()=>navigate('Welcome')} aria-label="EngiQuest home"><img src={assetPath("/engiquest-logo.png")} alt=""/><span>Engi<span className="orange">Quest</span><small>IDEAS START HERE</small></span></button>;
  const settings=<div className="top-actions"><label className="field-selector"><Compass size={16}/><span className="sr-only">Engineering field</span><select aria-label="Engineering field" value={data.field} onChange={e=>chooseField(e.target.value as FieldFilter)}><option value="all">All Disciplines</option>{FIELDS.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</select></label><button className="profile-button" aria-label={`Switch to ${data.theme==='dark'?'light':'dark'} mode`} onClick={()=>update(s=>({...s,theme:s.theme==='dark'?'light':'dark'}))}>{data.theme==='dark'?<Sun size={18}/>:<Moon size={18}/>}</button><button className="profile-button" aria-label="Profile" onClick={()=>setModal('profile')}><UserRound size={19}/></button></div>;
- return <MotionConfig reducedMotion="user"><a className="skip-link" href="#main-content">Skip to main content</a><div className={`app-shell world-${data.field} ${landing?'landing-shell':''}`}>
+ return <MotionConfig reducedMotion="user"><a className="skip-link" href="#main-content">Skip to main content</a><div className="site-maintenance" role="status"><Wrench size={15} aria-hidden="true"/><p><strong>We’re improving EngiQuest.</strong> Some features may be temporarily unavailable during maintenance.</p></div><div className={`app-shell world-${data.field} ${landing?'landing-shell':''}`}>
  {landing?<header className="welcome-topbar">{brand}{settings}</header>:<aside className="sidebar">{brand}<div className="nav-label">YOUR EXPLORATION SPACE</div><nav aria-label="Main navigation">{NAV.map(({icon:Icon,title,subtitle})=><button key={title} className={view===title?'nav active':'nav'} onClick={()=>title==='Quest DStudios'?openCad():navigate(title)} aria-current={view===title?'page':undefined}><Icon size={20}/><span>{title}<small>{subtitle}</small></span>{view===title&&<span className="nav-indicator"/>}</button>)}</nav><div className="rail-world"><span className="eyebrow">CURRENT WORLD / {theme.code.split('/')[1]}</span><b>{theme.studioName}</b><p>{theme.tagline}</p><button className="text-button" onClick={()=>navigate('Tracks')}>Explore another world <ArrowUpRight size={15}/></button></div><div className="side-bottom"><span className="tiny">FOR THE NEXT GENERATION<br/>OF PROBLEM SOLVERS.</span><span className="rail-grade">GRADES 6–12</span></div></aside>}
  <div className="main-shell">{!landing&&<header className="topbar"><span className="breadcrumb">{theme.code} <span>/</span> <b>{view}</b></span>{settings}</header>}
  <main id="main-content" tabIndex={-1}>{storageError&&<p role="alert" className="notice">{storageError}</p>}

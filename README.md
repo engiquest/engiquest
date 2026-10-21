@@ -16,7 +16,11 @@ Every visit opens three choices: Discover Your Path (20-question interest quiz),
 
 Each engineering field has its own illustrated environment, palette in dark and light mode, featured lab, CAD mission, and filtered activities. The theme carries into careers, Journey, the profile/mentor drawers, and the CAD controls and grid. Lab cards preview their actual simulation. Use the search box to find an activity within the active field.
 
-For publishing the private GitHub source as a live Next.js website at **engiquest.org**, follow [PUBLISHING-GITHUB.md](PUBLISHING-GITHUB.md). GitHub stores the source; Vercel runs the server. GitHub Pages cannot run this complete app's API.
+The welcome includes the owner-supplied “Join 4,000+ students” message, and a maintenance notice appears across the site. This is static copy, not a live student counter. Edit the community text in `lib/site-copy.ts`.
+
+For publishing the static edition on **GitHub Pages** at **engiquest.org**, follow [PUBLISHING-GITHUB.md](PUBLISHING-GITHUB.md). The existing source repository is private **engiquest/engiquest**, branch **main**. Pages hosts the browser-based learning activities with **written-guide-only EngiBot**; the local server retains optional AI support.
+
+**Current publishing blocker:** GitHub's Pages screen says **“Upgrade or make this repository public to enable Pages.”** The repository stays private. Its owner needs an eligible paid GitHub plan to use Pages while preserving that choice; public source is an alternative only if the user explicitly chooses it. No live Pages deployment, domain routing or HTTPS has been verified.
 
 Keep the working project outside OneDrive, Dropbox and other synced folders. If you already have a different project at that path, choose a fresh folder such as `C:\Users\anita\Developer\engiquest-new`; do not merge or replace an existing project. Commands below use the intended folder; change the quoted path if you chose another one.
 
@@ -68,7 +72,7 @@ That setting lasts for the current PowerShell session. The port is part of the b
 - **EngiScope:** explore careers, courses, majors and official opportunity links for the active field. Salary cards use dated United States occupational wage statistics; percentile labels are not promises of entry-, mid- or senior-career pay.
 - **My Journey:** see separate lab, CAD, project and quiz progress, badges, completion history and best scores. Repeating a completed activity improves the best score without creating duplicate completions.
 - **Profile:** change your nickname, theme and active field, or retake the interest quiz. The 20-question quiz shows interest matches for all six fields. It does not predict aptitude or restrict which activities you can choose.
-- **EngiBot:** read the selected activity's written guidance. Optional AI has a separate disclosure and consent step.
+- **EngiBot:** read the selected activity's written guidance. The GitHub Pages edition uses these authored guides only. Optional AI on the local server has a separate disclosure and consent step.
 
 Tab moves between controls. Enter or Space activates focused buttons. The interface honors your operating system/browser preference to reduce motion. You can use the CAD object list, view buttons and numeric inspector without relying only on mouse gestures.
 
@@ -136,7 +140,7 @@ npm.cmd run dev -- --port 3000
 
 The main test runner is `scripts/test.mjs`. It bundles the TypeScript tests with esbuild before using Node's test runner, avoiding the `tsx` launcher issue observed in this Windows environment. Tests do not send real AI requests.
 
-Recorded automated development checks include **51 passing tests**, **90 lab level solutions**, **150 lab boundary cases**, and **2,540 project preparation input combinations**. These checks validate models and behavior; they are not equivalent to testing every interaction in every browser. Consult [VERIFICATION.md](VERIFICATION.md) for the final browser checks and production-build result. This README does not claim a Vercel deployment or a live AI-account test has occurred.
+Recorded automated development checks include **51 passing tests**, **90 lab level solutions**, **150 lab boundary cases**, and **2,540 project preparation input combinations**. These checks validate models and behavior; they are not equivalent to testing every interaction in every browser. Consult [VERIFICATION.md](VERIFICATION.md) for the final browser checks and production-build result. This README does not claim a live GitHub Pages deployment or a live AI-account test has occurred.
 
 ## 7. Diagnose an error from its log
 
@@ -167,12 +171,14 @@ npm.cmd ci 2>&1 | Tee-Object -FilePath '.\logs\install.log'
 | CAD reports missing/lost 3D graphics support | Export CAD JSON if available, then use a current browser with WebGL/hardware acceleration enabled. A lost graphics context requires a page reload after saving. |
 | Progress looks empty after changing the address | Return to the original browser profile and exact original host/port. The records are stored separately by address. |
 | Storage is full or blocked | Export your visible progress and CAD model; stop adding photos. Avoid clearing site storage until you have kept the records you need. |
-| EngiBot shows written-guide mode | That is the normal state without valid AI configuration. Labs, projects, CAD and Journey do not require an API key. |
+| EngiBot shows written-guide mode | This is the intended GitHub Pages behavior, and the local default without valid AI configuration. Labs, projects, CAD and Journey do not require an API key. |
 | EngiBot reports an access-code, timeout or provider-account problem | Follow the displayed message. Check server-side settings if you own the site; use written guidance while resolving it. Never paste keys into chat or screenshots. |
 
 When asking for help, include the exact error text, the command you ran, `node --version`, `npm.cmd --version`, and the browser address. Remove API keys, access codes and personal details. This gives enough evidence to investigate instead of repeatedly restarting without a diagnosis.
 
-## 8. Optional EngiBot AI
+## 8. Optional EngiBot AI on the local server
+
+**This section applies to the locally running Next.js server.** GitHub Pages serves static files and cannot run the AI API. Its build excludes the API route and keeps EngiBot in written-guide mode. Do not add API keys to the static export or GitHub Actions in an attempt to enable AI there.
 
 **No live AI connection was verified for this delivery because no credentials were provided.** Written-guide mode is available without configuration. AI access requires a separate OpenAI API project, a usable model and any applicable billing; credentials belong to the site owner, not students.
 
@@ -196,47 +202,26 @@ The API uses `store: false`; this does **not** mean Zero Data Retention. Provide
 
 The server has strict input limits, request timeouts, safe errors, and a limit of 12 requests per minute with two concurrent requests **per server process**. Those counters are independent across serverless instances. The shared access code is not individual student authentication. Public school use of AI needs suitable managed authentication, central abuse/budget controls and a privacy/safeguarding review. These limitations do not prevent using the local non-AI learning activities.
 
-## 9. Publish to Vercel after local checks
+## 9. Prepare and publish the GitHub Pages edition
 
-**These are instructions for you to perform; the website has not been published by this README.** A Vercel account, internet access and an eligible hosting plan are required. Keep AI disabled for the first deployment. Review the local verification report and resolve failing checks before publishing.
-
-The following path uses Windows PowerShell and does not require installing Git. Next.js is supported directly by Vercel. [Vercel's Next.js documentation](https://vercel.com/docs/frameworks/full-stack/nextjs).
-
-1. Sign in or create an account at [Vercel](https://vercel.com). Open PowerShell in the project folder:
+The Pages build uses a separate staging export without `/api/engibot`. It does not replace the normal local server build or launcher. In PowerShell, from the project folder, run:
 
 ```powershell
-Set-Location "$env:USERPROFILE\Developer\engiquest"
-npx.cmd vercel@latest login
-npx.cmd vercel@latest link
+npm.cmd run build:pages
+npm.cmd run preview:pages
 ```
 
-The first `npx.cmd` invocation may ask to download the Vercel command-line tool. Follow the browser sign-in, select your intended account/team, and create a new project named `engiquest` (or an unused name). Link this folder to that new project. This creates local `.vercel` metadata; keep it out of source archives. [Vercel CLI project setup](https://vercel.com/docs/projects/deploy-from-cli).
+Open the printed preview address and keep that window running while checking the site. Press Ctrl+C to stop. Test the exported site through this server, not by opening its HTML file directly. Building and previewing do not publish anything.
 
-2. In the Vercel project dashboard, open **Settings → Build and Deployment**. Select **Node.js 24.x**. Vercel supports this LTS major and applies its patch updates. [Supported Vercel Node versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
+The existing private repository is [engiquest/engiquest](https://github.com/engiquest/engiquest), with source on **main**. The supplied `.github/workflows/deploy-pages.yml` uses **workflow_dispatch** so source pushes do not automatically publish it. After the account's Pages eligibility blocker is resolved, select **Settings → Pages → Build and deployment → Source → GitHub Actions**.
 
-3. Use the **Next.js** framework preset. The root directory must be the folder containing `package.json`, not `app` or `.next`. Use install command `npm ci` and build command `npm run build`; leave the framework's output-directory setting at its Next.js default. Vercel should detect the framework, but check the displayed settings before deploying. [Vercel build configuration](https://vercel.com/docs/builds/configure-a-build).
+When ready, open the repository's **Actions** tab, select the workflow for **deploy-pages.yml**, choose **Run workflow → main → Run workflow**, and inspect its build/deployment result. This action publishes the site. Keep the source private; do not change repository visibility to bypass the plan requirement. [GitHub Pages eligibility](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) and [manual workflow steps](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).
 
-4. Leave AI variables unset for the first deployment so EngiBot uses written guidance. If you later enable AI, add `OPENAI_API_KEY`, an explicit `OPENAI_MODEL`, and a 16–128 character `ENGIBOT_ACCESS_CODE` in **Settings → Environment Variables** for the intended environments. Enter secrets in the dashboard, not in source files. Apply changes with a new deployment. [Vercel environment variables](https://vercel.com/docs/environment-variables).
+The workflow uses `actions/configure-pages` output `base_path` to build links for the current address. **Run the workflow again after adding, changing or removing the custom domain.** The normal project address is `https://engiquest.github.io/engiquest/`; the intended custom address is `https://engiquest.org`.
 
-5. From the same PowerShell folder, publish the initial deployment:
+Follow [PUBLISHING-GITHUB.md](PUBLISHING-GITHUB.md) for the exact GitHub settings, Domain.com DNS records, domain verification, HTTPS and troubleshooting instructions. Do not change website DNS while the Pages plan blocker remains unresolved.
 
-```powershell
-npx.cmd vercel@latest deploy
-```
-
-**The first deployment of a new Vercel project can be production even without `--prod`.** Treat this command as publishing. Keep its address unshared while checking it and review the project's deployment-protection settings. After an initial production deployment exists, the ordinary deploy command creates previews. [Vercel's current first-deployment behavior](https://vercel.com/docs/projects/deploy-from-cli).
-
-6. Open the returned HTTPS address on your desktop and phone. Check navigation, field filtering, quiz results, a lab's scoring, refresh persistence, a project checklist, CAD modeling/JSON export and written-guide mode. Vercel storage starts separately from local progress. These hosted checks must be performed; a successful upload alone does not establish that they passed.
-
-7. For later changes, make and test the edits locally, then create and inspect a preview using the ordinary deploy command. When that version is ready to be public, publish production:
-
-```powershell
-npx.cmd vercel@latest deploy --prod
-```
-
-Review the deployment's build logs when a build fails and its runtime logs when a page or API request fails. Share the production address only after checking it. [Vercel deploy command](https://vercel.com/docs/cli/deploy).
-
-You can instead connect a source repository through Vercel's Git integration. That supports automatic preview deployments and deployments from a selected production branch. Keep the provided lockfile, ignore dependencies/build caches and exclude credentials before pushing any repository. [Vercel Git deployment documentation](https://vercel.com/docs/git).
+After deployment, check desktop/mobile navigation, field filtering, quiz completion, lab scoring, refresh persistence, project checklists, CAD operations/exports and written-guide mode at the actual published address. A successful local build is not a hosted browser verification. Progress remains separate at each browser origin, including local, github.io and custom-domain addresses.
 
 ## 10. What is in the editable source
 
@@ -249,7 +234,7 @@ The project uses Next.js App Router, React, TypeScript, Tailwind CSS, Framer Mot
 - `scripts` contains the Windows-friendly launcher support and test runner.
 - `tests` contains automated behavior checks.
 
-The shareable source ZIP excludes `node_modules`, `.next`, test/build caches, logs, `.vercel` metadata and private environment files. It includes `.env.example` with blank values. Anyone receiving it must extract it into a fresh folder, install Node 24 LTS and install dependencies before running it. Browser-stored learning progress and models are not automatically included in a source archive.
+The shareable source ZIP excludes `node_modules`, `.next`, test/build caches, logs, generated Pages exports and private environment files. It includes `.env.example` with blank values. Anyone receiving it must extract it into a fresh folder, install Node 24 LTS and install dependencies before running it. Browser-stored learning progress and models are not automatically included in a source archive.
 
 The simulations state their assumptions and are educational approximations. The complete classroom model catalogue is implemented, but it is not validated for real structural, flight, electrical, clinical or manufacturing decisions. External program dates, eligibility and prices can change; use the official links in EngiScope. The displayed salary data is explicitly dated May 2025 and sourced from BLS rather than labeled as guaranteed future earnings.
 

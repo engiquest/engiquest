@@ -1,6 +1,16 @@
 # EngiQuest verification and limitations
 
-Redesign review: October 18, 2026 (America/Chicago). Original delivery review: October 9, 2026.
+GitHub Pages adaptation review: October 19–21, 2026 (America/Chicago). Redesign review: October 18. Original delivery review: October 9.
+
+## October 19–21 GitHub Pages verification
+
+- Added a dedicated static export command and a local static preview server. Staging excludes the API route and environment files; the existing local server app stays editable. Pages EngiBot makes no AI availability request and explicitly identifies authored written guidance.
+- Added a manually triggered GitHub Pages workflow with separate build and deploy jobs, a locked dependency install, tests, TypeScript checks and a static build. The workflow reads Pages settings for the asset prefix and limits permissions to each job’s needs. The cloud workflow has not run because Pages is blocked for this private repository on its current plan.
+- Added the global maintenance notice and the owner-supplied “Join 4,000+ students” copy. The number is static editorial text, not an independently verified count or live analytics.
+- The /engiquest static export built successfully on Windows and loaded its logo and JavaScript in the actual browser. Rechecked all six field dashboards (five labs each), all 20 quiz questions and six match results, lab failure at 66/100 and success at 100/100, repeat completion without duplicates, real CAD subtraction and geometry pass, and undo/redo. Refresh preserved quiz, field and lab progress; Journey showed one completed lab level and one CAD quest.
+- Project preparation failure and success feedback worked. A checked project item survived a refresh and was then restored to unchecked; no physical project was claimed as built. The mobile light welcome and Biomedical career view measured 375 CSS pixels with no horizontal overflow, and the career view showed one matching card. No browser error logs were present in these static checks.
+- 75 automated tests and TypeScript passed after the Pages adaptation. Later code review corrected the build job’s Pages read permission and prevented an export asset prefix from affecting normal local mode. The final normal production build and root-path static production build both passed. Three direct configuration checks covered normal mode, project-path export and root export.
+- The root export was opened in the browser on October 21: logo loaded, CAD canvas rendered, saved milestones persisted, and EngiBot retained its static disclosure with no browser error logs. HTTP checks returned 200 for the page/logo, 404 for absent static API and missing page, and 200 with configured:false for the normal local API. A second preview launch against the occupied port exited with a clear alternate-port instruction.
 
 ## October 18 redesign verification
 
@@ -13,7 +23,7 @@ Redesign review: October 18, 2026 (America/Chicago). Original delivery review: O
 - In the actual browser, dimensioned a plate and cylinder, performed real mesh subtraction, passed the mechanical CAD geometry check, and exercised undo/redo. The light CAD canvas and controls updated with the selected discipline. Existing saved model data remained available.
 - Desktop screenshots were captured at the 1440 × 1000 preview setting; mobile screenshots and the six discipline images are in the delivery's `redesign-verification` folder.
 
-No live AI-provider call was made. Local browser checks are distinct from public hosting/domain verification. GitHub source and Vercel publishing instructions are in `PUBLISHING-GITHUB.md`.
+No live AI-provider call was made. Local browser checks are distinct from public hosting/domain verification. GitHub source and GitHub Pages publishing instructions are in `PUBLISHING-GITHUB.md`.
 
 ## What is implemented
 
@@ -31,7 +41,7 @@ No live AI-provider call was made. Local browser checks are distinct from public
 
 **Fresh installation:** Created `C:\Users\anita\Developer\engiquest` only after confirming that it did not exist. Its actual CMD launcher installed the locked packages and served HTTP 200 at `127.0.0.1:3000`. A later launch reused dependencies. With port 3000 occupied, a second real launcher explained the conflict, selected port 3001, and served HTTP 200 without stopping the first server. The launcher does not run tests at startup. npm reported zero known vulnerabilities at installation; this is a point-in-time registry result, not a security guarantee.
 
-**Automated checks:** 51 tests passed with no failures or skipped tests. This includes 90 reachable lab-level solutions, 150 lab boundary/default evaluations and physical trend/truth-table checks; 2,540 project preparation combinations; state hydration/parsing and duplicate/best-score behavior; real CAD subtraction, invalid imports, geometric quest failure cases and STL geometry; mocked AI consent/authentication/redaction/timeout/body-limit/error behavior; and 11 launcher checks. Windows CMD fixtures verified paths containing spaces, ampersands, parentheses and exclamation marks, plus a visible nonzero exit. Those path fixtures used a small test child; the real application was separately started from the prepared folder.
+**Original automated checks:** 51 tests passed with no failures or skipped tests. This includes 90 reachable lab-level solutions, 150 lab boundary/default evaluations and physical trend/truth-table checks; 2,540 project preparation combinations; state hydration/parsing and duplicate/best-score behavior; real CAD subtraction, invalid imports, geometric quest failure cases and STL geometry; mocked AI consent/authentication/redaction/timeout/body-limit/error behavior; and 11 launcher checks. Windows CMD fixtures verified paths containing spaces, ampersands, parentheses and exclamation marks, plus a visible nonzero exit. Those path fixtures used a small test child; the real application was separately started from the prepared folder.
 
 **TypeScript and production:** The final source passed `tsc --noEmit` and `next build`. The generated site has the main page and a server-side `/api/engibot` route. The test harness and CSG dependency print deprecation warnings; these did not fail checks.
 
@@ -46,12 +56,12 @@ No live AI-provider call was made. Local browser checks are distinct from public
 - Rejected invalid CAD JSON without replacing the current model; imported valid JSON. Verified generated JSON, STL and Journey downloads on disk. The browser automation's download notification timed out, but the actual files were created and inspected.
 - Checked mobile home, lab and CAD widths without horizontal page overflow; inspected dark and light layouts. Written-guide disclosure and project safety guidance were checked. No browser error logs were present in the final October 6 check.
 
-On October 9, the browser tool rejected access to the existing local tab under its URL policy. It was not bypassed. Today's final checks are command-line checks. The small final addition that connects the selected CAD quest to EngiBot passed TypeScript/build checks but has **not** been rechecked interactively in the browser. Earlier browser results remain valid for the features listed above. Screenshots accompany the delivery outside the source ZIP.
+An October 9 browser-tool restriction prevented that day’s final CAD mentor check. It was resolved on October 19: the production browser showed the selected Civil quest’s specific EngiBot guide. Screenshots accompany the delivery outside the source ZIP.
 
 ## Remaining limitations and unverified items
 
 - Live AI is **not verified**: no API credentials were supplied. Written-guide mode works without them. To enable real AI, follow README section 8 and supply your own server-side API key, supported model and production access code. No paid provider request was made during testing.
-- No Vercel deployment or hosting account was used. README section 9 provides the publishing steps and required checks on the eventual hosted address.
+- GitHub Pages publication is not verified. The actual private repository’s Pages settings require a plan upgrade or public repository. The source remains private. No domain DNS or HTTPS changes were made. README section 9 and PUBLISHING-GITHUB.md give the publishing steps.
 - No Windows 10 machine, physical phone, Safari, full screen-reader audit, or OS reduced-motion setting was tested. Reduced-motion support is implemented in CSS and Framer Motion; mobile results are viewport tests on Windows.
 - CAD uses bounded triangle meshes. There are no fillets, chamfers, arbitrary sketches, sketch constraints, Boolean unions or commercial CAD feature trees. Extrusions use L/hexagon profiles. STL may contain separate overlapping shells; inspect it before printing. Geometry checks are classroom targets, not structural or manufacturing validation.
 - Simulations are disclosed educational approximations. They are not clinical, structural, flight or electrical design tools.
@@ -60,5 +70,5 @@ On October 9, the browser tool rejected access to the existing local tab under i
 
 ## Quick final check for the site owner
 
-Open the prepared folder in File Explorer, double-click **Launch EngiQuest.cmd**, keep its window open, and open the printed address. In Quest DStudios select a field and open EngiBot: its guide should name that field's selected quest. This completes the one browser check blocked during the final review. Use the README for setup, logs, troubleshooting and Vercel publishing.
+Open the prepared folder in File Explorer, double-click **Launch EngiQuest.cmd**, keep its window open, and open the printed address. In Quest DStudios select a field and open EngiBot: its guide should name that field's selected quest. This check also works in the GitHub Pages written-guide edition. Use the README for setup, logs, troubleshooting and GitHub Pages publishing.
 

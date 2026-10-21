@@ -10,3 +10,5 @@ logs/
 .test-cache/
 .npm-cache/
 .vercel/
+.pages-build/
+out/
