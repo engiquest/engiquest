@@ -2,9 +2,9 @@
 
 Updated **21 October 2026**. Source: private [engiquest/engiquest](https://github.com/engiquest/engiquest), branch **main**. Intended address: **engiquest.org**, registered through **Domain.com**. GitHub Pages is the chosen website host.
 
-**Current verified blocker:** the repository's **Settings → Pages** screen says: **“Upgrade or make this repository public to enable Pages.”** The repository remains private. To keep it private, the account owner must select an eligible paid GitHub plan. Making the source public is an alternative only if the user explicitly changes that preference; nothing here changes visibility. GitHub documents private-repository Pages support on Pro, Team and Enterprise plans. [Pages plan eligibility](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
+**Live now:** [EngiQuest on GitHub Pages](https://engiquest.github.io/engiquest/) was published from `main` on 21 October 2026. The [first publishing run](https://github.com/engiquest/engiquest/actions/runs/39702415390) passed its tests, TypeScript check, static build, and deployment. The site was opened and its field selection and lab catalogue were checked in a browser. The repository remains private.
 
-**No live Pages deployment, domain routing or HTTPS has been verified.** A source upload and a successful local build are separate from a working public website. Resolve the plan blocker before changing website DNS.
+**Remaining domain step:** `engiquest.org` is not connected yet because its registrar account was unavailable for sign-in. GitHub account-level domain verification has been started; the DNS TXT value is listed below. Do not save the custom domain in repository Pages settings until the DNS changes can be made, because that could interrupt the working GitHub address. Domain routing and custom-domain HTTPS have not yet been verified.
 
 ## What the Pages edition includes
 
@@ -37,7 +37,7 @@ The connected GitHub app's authentication is separate from PowerShell Git creden
 
 Do not upload `.env.local`, other secrets, dependencies, build caches or logs. Keep `.env.example` blank. Pages needs no OpenAI credentials. The publishing workflow uses GitHub's scoped workflow permissions; do not paste a personal token into its YAML.
 
-## 3. Enable Pages after the plan blocker is resolved
+## 3. Publish updates to GitHub Pages
 
 1. Sign into GitHub as **engiquest** and open [the repository's Pages settings](https://github.com/engiquest/engiquest/settings/pages).
 2. Under **Build and deployment → Source**, choose **GitHub Actions**. Use the supplied workflow; do not add a competing Jekyll workflow or select a source branch for raw Next.js files.
@@ -51,7 +51,7 @@ Without a custom domain, this project site's normal address is `https://engiques
 
 ## 4. Connect engiquest.org
 
-Do this only once Pages is enabled and you are ready to publish. Start with GitHub's account-level **Settings → Pages → Add a domain** to verify **engiquest.org**. Copy the unique TXT record GitHub supplies into your DNS provider, return to GitHub and verify it; keep that TXT record afterward. [GitHub domain verification](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages).
+GitHub account-level domain verification has already been started for **engiquest.org**. At the authoritative DNS provider, add a TXT record with name `_github-pages-challenge-engiquest` (full name `_github-pages-challenge-engiquest.engiquest.org`) and value `bdb1d27ef3ae8fe6d20f2448d9218d`. Then open [the pending verification page](https://github.com/settings/pages_verified_domains/engiquest.org) and click **Verify**. Keep the TXT record afterward. [GitHub domain verification](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages).
 
 Then, in the **repository's Settings → Pages → Custom domain**, save **engiquest.org** before changing its website DNS. GitHub Actions publishing uses that setting; a `CNAME` file is not required. Point `www` to `engiquest.github.io` with no repository path. Configure the following records at the authoritative DNS provider:
 
@@ -73,7 +73,7 @@ Run the publishing workflow again after saving the domain. When GitHub's DNS che
 
 | Symptom | Concrete next step |
 | --- | --- |
-| Pages still says to upgrade or make the repository public | Have the account owner activate an eligible plan for private-repository Pages. Keep the repository private unless the user explicitly decides otherwise. |
+| GitHub Pages URL is unavailable | Check the latest publishing workflow run and repository Pages settings. The first run succeeded on 21 October 2026. |
 | No Run workflow button | Check that `deploy-pages.yml` with `workflow_dispatch` is on default branch main and that your account has write access. |
 | Build/deploy fails | Open that Actions run and read the first failing step. Check Pages source is GitHub Actions and any displayed environment/permission restriction. |
 | Page loads without styling, logo or images | Compare the published address with the configured custom domain, then rerun the workflow so `base_path` is rebuilt. |
